@@ -25,7 +25,6 @@ class WikiViewModel : ViewModel() {
     }
 
     fun beginSearch(srsearch: String) {
-        _response.value = "- Loading..."
         apiService.hitCountCheck("query", "json", "search", srsearch)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

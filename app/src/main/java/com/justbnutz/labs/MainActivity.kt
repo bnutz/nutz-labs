@@ -1,16 +1,27 @@
 package com.justbnutz.labs
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.justbnutz.labs.labs.CookieFragment
+import com.justbnutz.labs.labs.IgFragment
 import com.justbnutz.labs.labs.WikiFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: MainViewModel
+
+    private val pagerCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            (fragmentPager?.adapter as? ScreenPagerAdapter)?.let {
+                showToast(it.getFragmentTag(position).removePrefix(BuildConfig.APPLICATION_ID).removeSuffix(".Companion"))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +29,16 @@ class MainActivity : AppCompatActivity() {
 
         initViewModel()
         initView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fragmentPager?.registerOnPageChangeCallback(pagerCallback)
+    }
+
+    override fun onPause() {
+        fragmentPager?.unregisterOnPageChangeCallback(pagerCallback)
+        super.onPause()
     }
 
     private fun initViewModel() {
@@ -46,11 +67,15 @@ class MainActivity : AppCompatActivity() {
     private inner class ScreenPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
         private val pageList = listOf(
-            WikiFragment.newInstance()
+            Pair(WikiFragment.newInstance(), WikiFragment.TAG),
+            Pair(CookieFragment.newInstance(), CookieFragment.TAG),
+            Pair(IgFragment.newInstance(), IgFragment.TAG)
         )
+
+        fun getFragmentTag(position: Int) = pageList[position].second
 
         override fun getItemCount(): Int = pageList.size
 
-        override fun createFragment(position: Int) = pageList[position]
+        override fun createFragment(position: Int) = pageList[position].first
     }
 }

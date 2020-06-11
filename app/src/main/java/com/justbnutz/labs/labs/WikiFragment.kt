@@ -51,25 +51,21 @@ class WikiFragment : BaseFragment() {
     private fun initView() {
         btn_submit?.setOnClickListener { btnView ->
             edit_search?.text?.toString()?.let {
-                if (it.isNotEmpty()) viewModel.beginSearch(it)
-
-                hideKeyboard(btnView)
-            }
+                if (it.isNotEmpty()) {
+                    parentActivity?.hideKeyboard(btnView)
+                    parentActivity?.showSnackbar(btnView, getString(R.string.loading))
+                    viewModel.beginSearch(it)
+                }
+           }
         }
 
         txt_response?.let { txtView ->
             // Turns off word-wrap in TextView
             txtView.setHorizontallyScrolling(true)
 
-            txtView.setOnClickListener { _ ->
-                txtView.text?.toString()?.let {
-                    onItemCopy(it)
-                }
-            }
-
             txtView.setOnLongClickListener {
                 txtView.text?.toString()?.let {
-                    onItemShare(it)
+                    parentActivity?.onItemCopy(it)
                 }
                 true
             }

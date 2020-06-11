@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">Nutz Labs</string>
     <string name="submit">Submit</string>
+    <string name="load">Load</string>
+    <string name="loading">Loading…</string>
+    <string name="loaded">Loaded</string>
+    <string name="incomplete_form">Incomplete form</string>
     <string name="share_title">Share</string>
     <string name="item_copied">Item Copied</string>
+    <string name="cookie_hint"># Netscape Cookie file format…</string>
+    <string name="ds_user_id">ds_user_id</string>
+    <string name="sessionid">sessionid</string>
+    <string name="csrftoken">csrftoken</string>
+    <string name="username">username</string>
 </resources>
