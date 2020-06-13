@@ -7,6 +7,7 @@
     <string name="incomplete_form">Incomplete form</string>
     <string name="share_title">Share</string>
     <string name="item_copied">Item Copied</string>
+    <string name="error_message">Error: %s</string>
     <string name="cookie_hint"># Netscape Cookie file format…</string>
     <string name="ds_user_id">ds_user_id</string>
     <string name="sessionid">sessionid</string>

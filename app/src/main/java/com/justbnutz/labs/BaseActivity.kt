@@ -33,20 +33,28 @@ abstract class BaseActivity : AppCompatActivity() {
 
     fun onItemCopy(copyText: String) {
         (getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?)?.let {
-            val clip = ClipData.newPlainText("text", copyText)
-            it.setPrimaryClip(clip)
+            try {
+                val clip = ClipData.newPlainText("text", copyText)
+                it.setPrimaryClip(clip)
 
-            showToast(getString(R.string.item_copied))
+                showToast(getString(R.string.item_copied))
+            } catch (e: Exception) {
+                showToast(String.format(getString(R.string.error_message), e.message))
+            }
         }
     }
 
     fun onItemShare(shareText: String) {
-        val shareTitle = getString(R.string.share_title)
-        val intent = Intent(Intent.ACTION_SEND).also {
-            it.type = "text/plain"
-            it.putExtra(Intent.EXTRA_SUBJECT, shareTitle)
-            it.putExtra(Intent.EXTRA_TEXT, shareText)
+        try {
+            val shareTitle = getString(R.string.share_title)
+            val intent = Intent(Intent.ACTION_SEND).also {
+                it.type = "text/plain"
+                it.putExtra(Intent.EXTRA_SUBJECT, shareTitle)
+                it.putExtra(Intent.EXTRA_TEXT, shareText)
+            }
+            startActivity(Intent.createChooser(intent, null))
+        } catch (e: Exception) {
+            showToast(String.format(getString(R.string.error_message), e.message))
         }
-        startActivity(Intent.createChooser(intent, null))
     }
 }

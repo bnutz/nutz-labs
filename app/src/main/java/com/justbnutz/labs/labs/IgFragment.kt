@@ -79,16 +79,7 @@ class IgFragment : BaseFragment() {
             }
         }
 
-        txt_response?.let { txtView ->
-            // Turns off word-wrap in TextView
-            txtView.setHorizontallyScrolling(true)
-
-            txtView.setOnLongClickListener { _ ->
-                txtView.text?.toString()?.let {
-                    parentActivity?.onItemCopy(it)
-                }
-                true
-            }
-        }
+        // Turns off word-wrap in TextView
+        txt_response?.setHorizontallyScrolling(true)
     }
 }

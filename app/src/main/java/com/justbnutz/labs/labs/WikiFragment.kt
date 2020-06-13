@@ -59,16 +59,7 @@ class WikiFragment : BaseFragment() {
            }
         }
 
-        txt_response?.let { txtView ->
-            // Turns off word-wrap in TextView
-            txtView.setHorizontallyScrolling(true)
-
-            txtView.setOnLongClickListener {
-                txtView.text?.toString()?.let {
-                    parentActivity?.onItemCopy(it)
-                }
-                true
-            }
-        }
+        // Turns off word-wrap in TextView
+        txt_response?.setHorizontallyScrolling(true)
     }
 }
