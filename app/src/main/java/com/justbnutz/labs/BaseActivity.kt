@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -31,7 +32,7 @@ abstract class BaseActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun onItemCopy(copyText: String) {
+    fun copyText(copyText: String) {
         (getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager?)?.let {
             try {
                 val clip = ClipData.newPlainText("text", copyText)
@@ -44,7 +45,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun onItemShare(shareText: String) {
+    fun shareText(shareText: String) {
         try {
             val shareTitle = getString(R.string.share_title)
             val intent = Intent(Intent.ACTION_SEND).also {
@@ -53,6 +54,23 @@ abstract class BaseActivity : AppCompatActivity() {
                 it.putExtra(Intent.EXTRA_TEXT, shareText)
             }
             startActivity(Intent.createChooser(intent, null))
+        } catch (e: Exception) {
+            showToast(String.format(getString(R.string.error_message), e.message))
+        }
+    }
+
+    fun runWebLink(webUrl: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
+            startActivity(intent)
+        } catch (e: Exception) {
+            showToast(String.format(getString(R.string.error_message), e.message))
+        }
+    }
+
+    fun runGenericIntent(intent: Intent) {
+        try {
+            startActivity(intent)
         } catch (e: Exception) {
             showToast(String.format(getString(R.string.error_message), e.message))
         }

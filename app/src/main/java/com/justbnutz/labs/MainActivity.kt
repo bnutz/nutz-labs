@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.justbnutz.labs.labs.AppListFragment
 import com.justbnutz.labs.labs.CookieFragment
 import com.justbnutz.labs.labs.IgFragment
 import com.justbnutz.labs.labs.WikiFragment
@@ -67,6 +68,7 @@ class MainActivity : BaseActivity() {
     private inner class ScreenPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
         private val pageList = listOf(
+            Pair(AppListFragment.newInstance(), AppListFragment.TAG),
             Pair(WikiFragment.newInstance(), WikiFragment.TAG),
             Pair(CookieFragment.newInstance(), CookieFragment.TAG),
             Pair(IgFragment.newInstance(), IgFragment.TAG)
