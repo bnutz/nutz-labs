@@ -61,6 +61,11 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAppList()
+    }
+
     override fun onItemClick(packageName: String) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also {
             it.addCategory(Intent.CATEGORY_DEFAULT)
@@ -134,6 +139,10 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
             viewModel.getAppList()
         }
 
+        lbl_sort?.setOnClickListener {
+            recycler_applist?.smoothScrollToPosition(0)
+        }
+
         switch_show_system_apps?.let {
             it.isChecked = viewModel.showSystemApps
             it.setOnCheckedChangeListener { _, isChecked ->
@@ -158,15 +167,8 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
             })
         }
 
-        swipe_applist?.let { swipeRefresh ->
-            swipeRefresh.setOnRefreshListener {
-                viewModel.getAppList()
-            }
-
-            swipeRefresh.post {
-                swipeRefresh.isRefreshing = true
-                viewModel.getAppList()
-            }
+        swipe_applist?.setOnRefreshListener {
+            viewModel.getAppList()
         }
 
         txt_open_usage_permissions?.setOnClickListener {
