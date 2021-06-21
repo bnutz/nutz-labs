@@ -1,24 +1,26 @@
 package com.justbnutz.labs.labs
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.justbnutz.labs.R
-import kotlinx.android.synthetic.main.fragment_instagram.*
+import com.justbnutz.labs.databinding.FragmentInstagramBinding
 import okhttp3.Cookie
 
-class IgFragment : BaseFragment() {
+class IgFragment : BaseFragment<FragmentInstagramBinding>() {
 
     private lateinit var viewModel: IgViewModel
     private lateinit var vmCookie: CookieViewModel
 
     // A LiveData observer which updates the UI on changes
     private val responseObserver = Observer<String> { response ->
-        txt_response?.let {
+        binding?.txtResponse?.let {
             it.append(response)
             it.append("\n")
             it.postDelayed({
-                scroll_response?.fullScroll(View.FOCUS_DOWN)
+                binding?.scrollResponse?.fullScroll(View.FOCUS_DOWN)
             }, 500)
         }
     }
@@ -27,9 +29,9 @@ class IgFragment : BaseFragment() {
         viewModel.updateCookies(it)
         it?.forEach {
             when(it.name) {
-                viewModel.DS_USER_ID -> edit_ds_user_id?.setText(it.value)
-                viewModel.SESSIONID -> edit_sessionid?.setText(it.value)
-                viewModel.CSRFTOKEN -> edit_csrftoken?.setText(it.value)
+                viewModel.DS_USER_ID -> binding?.editDsUserId?.setText(it.value)
+                viewModel.SESSIONID -> binding?.editSessionid?.setText(it.value)
+                viewModel.CSRFTOKEN -> binding?.editCsrftoken?.setText(it.value)
             }
         }
     }
@@ -40,7 +42,9 @@ class IgFragment : BaseFragment() {
         fun newInstance() = IgFragment()
     }
 
-    override fun getLayoutId() = R.layout.fragment_instagram
+    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentInstagramBinding {
+        return FragmentInstagramBinding.inflate(inflater, container, false)
+    }
 
     override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
@@ -57,18 +61,18 @@ class IgFragment : BaseFragment() {
     }
 
     override fun initView() {
-        btn_submit?.setOnClickListener { btnView ->
-            if (edit_target_username?.text?.isNotBlank() == true
+        binding?.btnSubmit?.setOnClickListener { btnView ->
+            if (binding?.editTargetUsername?.text?.isNotBlank() == true
                 && vmCookie.cookieList.value?.isNotEmpty() == true) {
                 parentActivity?.hideKeyboard(btnView)
                 parentActivity?.showSnackbar(btnView, getString(R.string.loading))
-                viewModel.getFollowing(edit_target_username.text.toString())
+                viewModel.getFollowing(binding?.editTargetUsername?.text.toString())
             } else {
                 parentActivity?.showSnackbar(btnView, getString(R.string.incomplete_form))
             }
         }
 
         // Turns off word-wrap in TextView
-        txt_response?.setHorizontallyScrolling(true)
+        binding?.txtResponse?.setHorizontallyScrolling(true)
     }
 }

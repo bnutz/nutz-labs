@@ -4,28 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.justbnutz.labs.BaseActivity
 
 /**
  * Common methods between all fragments go here
  */
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<vBinding: ViewBinding> : Fragment() {
 
-    val parentActivity by lazy { activity as? BaseActivity }
+    val parentActivity by lazy { activity as? BaseActivity<*> }
 
-    @LayoutRes
-    abstract fun getLayoutId(): Int
+    var binding: vBinding? = null
+
+    abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): vBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(getLayoutId(), container, false)
+        binding = getViewBinding(inflater, container)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
         initView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     abstract fun initViewModel()

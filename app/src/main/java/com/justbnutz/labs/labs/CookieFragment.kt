@@ -1,17 +1,21 @@
 package com.justbnutz.labs.labs
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.justbnutz.labs.R
-import kotlinx.android.synthetic.main.fragment_cookie.*
+import com.justbnutz.labs.databinding.FragmentCookieBinding
 import okhttp3.Cookie
 
-class CookieFragment : BaseFragment() {
+class CookieFragment : BaseFragment<FragmentCookieBinding>() {
 
     private lateinit var viewModel: CookieViewModel
 
     private val cookieObserver = Observer<List<Cookie>> {
-        parentActivity?.showSnackbar(btn_load, getString(R.string.loaded))
+        binding?.btnLoad?.let {
+            parentActivity?.showSnackbar(it, getString(R.string.loaded))
+        }
     }
 
     companion object {
@@ -20,7 +24,9 @@ class CookieFragment : BaseFragment() {
         fun newInstance() = CookieFragment()
     }
 
-    override fun getLayoutId() = R.layout.fragment_cookie
+    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentCookieBinding {
+        return FragmentCookieBinding.inflate(inflater, container, false)
+    }
 
     override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
@@ -33,10 +39,10 @@ class CookieFragment : BaseFragment() {
 
     override fun initView() {
         // Turns off word-wrap in EditText
-        edit_cookie?.setHorizontallyScrolling(true)
+        binding?.editCookie?.setHorizontallyScrolling(true)
 
-        btn_load?.setOnClickListener { btnLoad ->
-            edit_cookie?.text?.let {
+        binding?.btnLoad?.setOnClickListener { btnLoad ->
+            binding?.editCookie?.text?.let {
                 if (it.isNotBlank()) {
                     parentActivity?.hideKeyboard(btnLoad)
                     parentActivity?.showSnackbar(btnLoad, getString(R.string.loading))

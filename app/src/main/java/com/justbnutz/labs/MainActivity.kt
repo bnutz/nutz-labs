@@ -4,34 +4,34 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.justbnutz.labs.databinding.ActivityMainBinding
 import com.justbnutz.labs.labs.AppListFragment
 import com.justbnutz.labs.labs.CookieFragment
 import com.justbnutz.labs.labs.IgFragment
 import com.justbnutz.labs.labs.WikiFragment
-import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private lateinit var viewModel: MainViewModel
 
     private val pagerCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            (fragmentPager?.adapter as? ScreenPagerAdapter)?.let {
+            (binding.fragmentPager.adapter as? ScreenPagerAdapter)?.let {
                 showToast(it.getFragmentTag(position).removePrefix(BuildConfig.APPLICATION_ID).removeSuffix(".Companion"))
             }
         }
     }
 
-    override fun getLayoutId() = R.layout.activity_main
+    override fun getViewBinding() = ActivityMainBinding.inflate(layoutInflater)
 
     override fun onResume() {
         super.onResume()
-        fragmentPager?.registerOnPageChangeCallback(pagerCallback)
+        binding.fragmentPager.registerOnPageChangeCallback(pagerCallback)
     }
 
     override fun onPause() {
-        fragmentPager?.unregisterOnPageChangeCallback(pagerCallback)
+        binding.fragmentPager.unregisterOnPageChangeCallback(pagerCallback)
         super.onPause()
     }
 
@@ -41,20 +41,20 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initView() {
-        fragmentPager?.let {
+        binding.fragmentPager.let {
             val pagerAdapter = ScreenPagerAdapter(this)
             it.adapter = pagerAdapter
         }
     }
 
     override fun onBackPressed() {
-        fragmentPager?.let { viewPager ->
+        binding.fragmentPager.let { viewPager ->
             if (viewPager.currentItem > 0) {
                 viewPager.currentItem = viewPager.currentItem - 1
             } else {
                 super.onBackPressed()
             }
-        } ?: super.onBackPressed()
+        }
     }
 
     // https://developer.android.com/training/animation/screen-slide-2#kotlin

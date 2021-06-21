@@ -6,30 +6,34 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.justbnutz.labs.R
+import com.justbnutz.labs.databinding.FragmentApplistBinding
 import com.justbnutz.labs.models.AppListModel
-import kotlinx.android.synthetic.main.fragment_applist.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
+class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.AppListAdapterCallback {
 
     private lateinit var viewModel: AppListViewModel
     private val listAdapter by lazy { AppListAdapter(viewModel.compositeDisposable) }
-    private val bottomSheetBehaviour by lazy { BottomSheetBehavior.from(constraint_bottomsheet) }
+    private val bottomSheetBehaviour by lazy { binding?.constraintBottomsheet?.let {
+        BottomSheetBehavior.from(it)
+    } }
 
     private val appListObserver = Observer<List<AppListModel>> {
         listAdapter.updateItems(it, viewModel.currentSort.first)
-        swipe_applist?.let {
-            it.visibility = View.VISIBLE
-            it.isRefreshing = false
+        binding?.swipeApplist?.let { view ->
+            view.visibility = View.VISIBLE
+            view.isRefreshing = false
         }
-        txt_loading?.visibility = View.GONE
+        binding?.txtLoading?.visibility = View.GONE
     }
 
     private val csvListObserver = Observer<String> {
@@ -48,7 +52,9 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
         fun newInstance() = AppListFragment()
     }
 
-    override fun getLayoutId() = R.layout.fragment_applist
+    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentApplistBinding {
+        return FragmentApplistBinding.inflate(inflater, container, false)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -100,39 +106,39 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
     }
 
     override fun initView() {
-        img_drag_handle?.setOnClickListener {
-            when (bottomSheetBehaviour.state) {
-                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
-                BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding?.imgDragHandle?.setOnClickListener {
+            when (bottomSheetBehaviour?.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehaviour?.state = BottomSheetBehavior.STATE_EXPANDED
+                BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
                 else -> {}
             }
         }
 
-        img_sort_alphabetic?.setOnClickListener {
+        binding?.imgSortAlphabetic?.setOnClickListener {
             viewModel.clickSort(AppListViewModel.SortBy.ALPHABETIC)
             viewModel.getAppList()
         }
 
-        img_sort_first_installed?.setOnClickListener {
+        binding?.imgSortFirstInstalled?.setOnClickListener {
             viewModel.clickSort(AppListViewModel.SortBy.FIRST_INSTALLED)
             viewModel.getAppList()
         }
 
-        img_sort_last_updated?.setOnClickListener {
+        binding?.imgSortLastUpdated?.setOnClickListener {
             viewModel.clickSort(AppListViewModel.SortBy.LAST_UPDATED)
             viewModel.getAppList()
         }
 
-        img_sort_last_opened?.setOnClickListener {
+        binding?.imgSortLastOpened?.setOnClickListener {
             viewModel.clickSort(AppListViewModel.SortBy.LAST_OPENED)
             viewModel.getAppList()
         }
 
-        lbl_sort?.setOnClickListener {
-            recycler_applist?.smoothScrollToPosition(0)
+        binding?.lblSort?.setOnClickListener {
+            binding?.recyclerApplist?.smoothScrollToPosition(0)
         }
 
-        switch_show_system_apps?.let {
+        binding?.switchShowSystemApps?.let {
             it.isChecked = viewModel.showSystemApps
             it.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.showSystemApps = isChecked
@@ -140,27 +146,27 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
             }
         }
 
-        txt_export_csv?.setOnClickListener {
+        binding?.txtExportCsv?.setOnClickListener {
             initCsvExport()
         }
 
-        recycler_applist?.let {
+        binding?.recyclerApplist?.let {
             it.adapter = listAdapter
             listAdapter.setAdapterListener(this)
 
             it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
+                    bottomSheetBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
             })
         }
 
-        swipe_applist?.setOnRefreshListener {
+        binding?.swipeApplist?.setOnRefreshListener {
             viewModel.getAppList()
         }
 
-        txt_open_usage_permissions?.setOnClickListener {
+        binding?.txtOpenUsagePermissions?.setOnClickListener {
             parentActivity?.runGenericIntent(
                 Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             )
@@ -196,7 +202,7 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
                         parentActivity?.showToast(String.format(getString(R.string.error_message), e.message))
                     } finally {
                         buffWriter.close()
-                        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
+                        bottomSheetBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
                         viewModel.resetCsvStatus()
                     }
                 }

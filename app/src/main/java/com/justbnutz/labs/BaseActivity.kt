@@ -11,19 +11,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
 
 /**
  * Common methods between all activities go here
  */
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<vBinding: ViewBinding> : AppCompatActivity() {
 
-    @LayoutRes
-    abstract fun getLayoutId(): Int
+    lateinit var binding: vBinding
+
+    abstract fun getViewBinding(): vBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayoutId())
+        binding = getViewBinding()
+        setContentView(binding.root)
 
         initViewModel()
         initView()

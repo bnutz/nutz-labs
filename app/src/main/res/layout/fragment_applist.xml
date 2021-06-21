@@ -180,7 +180,7 @@
                 android:layout_height="1dp"
                 android:background="#eeeeee"
                 />
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_show_system_apps"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

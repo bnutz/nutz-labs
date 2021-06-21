@@ -1,22 +1,24 @@
 package com.justbnutz.labs.labs
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.justbnutz.labs.R
-import kotlinx.android.synthetic.main.fragment_wikipedia.*
+import com.justbnutz.labs.databinding.FragmentWikipediaBinding
 
-class WikiFragment : BaseFragment() {
+class WikiFragment : BaseFragment<FragmentWikipediaBinding>() {
 
     private lateinit var viewModel: WikiViewModel
 
     // A LiveData observer which updates the UI on changes
     private val responseObserver = Observer<String> {response ->
-        txt_response?.let {
+        binding?.txtResponse?.let {
             it.append(response)
             it.append("\n")
             it.postDelayed({
-                scroll_response?.fullScroll(View.FOCUS_DOWN)
+                binding?.scrollResponse?.fullScroll(View.FOCUS_DOWN)
             }, 500)
         }
     }
@@ -27,7 +29,9 @@ class WikiFragment : BaseFragment() {
         fun newInstance() = WikiFragment()
     }
 
-    override fun getLayoutId() = R.layout.fragment_wikipedia
+    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWikipediaBinding {
+        return FragmentWikipediaBinding.inflate(inflater, container, false)
+    }
 
     override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
@@ -38,8 +42,8 @@ class WikiFragment : BaseFragment() {
     }
 
     override fun initView() {
-        btn_submit?.setOnClickListener { btnView ->
-            edit_search?.text?.toString()?.let {
+        binding?.btnSubmit?.setOnClickListener { btnView ->
+            binding?.editSearch?.text?.toString()?.let {
                 if (it.isNotEmpty()) {
                     parentActivity?.hideKeyboard(btnView)
                     parentActivity?.showSnackbar(btnView, getString(R.string.loading))
@@ -49,6 +53,6 @@ class WikiFragment : BaseFragment() {
         }
 
         // Turns off word-wrap in TextView
-        txt_response?.setHorizontallyScrolling(true)
+        binding?.txtResponse?.setHorizontallyScrolling(true)
     }
 }
