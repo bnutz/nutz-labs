@@ -1,9 +1,5 @@
 package com.justbnutz.labs.labs
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.justbnutz.labs.R
@@ -24,17 +20,9 @@ class CookieFragment : BaseFragment() {
         fun newInstance() = CookieFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_cookie, container, false)
-    }
+    override fun getLayoutId() = R.layout.fragment_cookie
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initView()
-    }
-
-    private fun initViewModel() {
+    override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
         parentActivity?.apply {
             // Let the parent activity own the ViewModel so that it can be reused by other Fragments
@@ -43,7 +31,7 @@ class CookieFragment : BaseFragment() {
         }
     }
 
-    private fun initView() {
+    override fun initView() {
         // Turns off word-wrap in EditText
         edit_cookie?.setHorizontallyScrolling(true)
 

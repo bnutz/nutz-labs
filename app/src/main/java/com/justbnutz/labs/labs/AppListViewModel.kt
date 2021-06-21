@@ -6,17 +6,15 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.justbnutz.labs.models.AppListModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
-class AppListViewModel : ViewModel() {
+class AppListViewModel : BaseViewModel() {
 
     enum class SortBy {
         ALPHABETIC,
@@ -29,8 +27,6 @@ class AppListViewModel : ViewModel() {
         ASC,
         DESC
     }
-
-    val compositeDisposable = CompositeDisposable()
 
     var showSystemApps: Boolean = false
     var currentSort: Pair<SortBy, SortDir> = Pair(SortBy.ALPHABETIC, SortDir.ASC)
@@ -65,11 +61,6 @@ class AppListViewModel : ViewModel() {
     private val _errorMsg by lazy { MutableLiveData<String>() }
     val errorMsg: LiveData<String>
         get() = _errorMsg
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
 
     fun getAppList() {
         Observable.just(packageManager)

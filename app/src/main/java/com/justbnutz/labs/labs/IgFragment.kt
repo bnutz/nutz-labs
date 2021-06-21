@@ -1,9 +1,6 @@
 package com.justbnutz.labs.labs
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.justbnutz.labs.R
@@ -43,17 +40,9 @@ class IgFragment : BaseFragment() {
         fun newInstance() = IgFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_instagram, container, false)
-    }
+    override fun getLayoutId() = R.layout.fragment_instagram
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initView()
-    }
-
-    private fun initViewModel() {
+    override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
         viewModel = ViewModelProvider(this).get(IgViewModel::class.java)
 
@@ -67,7 +56,7 @@ class IgFragment : BaseFragment() {
         }
     }
 
-    private fun initView() {
+    override fun initView() {
         btn_submit?.setOnClickListener { btnView ->
             if (edit_target_username?.text?.isNotBlank() == true
                 && vmCookie.cookieList.value?.isNotEmpty() == true) {

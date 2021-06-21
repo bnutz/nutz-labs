@@ -2,27 +2,19 @@ package com.justbnutz.labs.labs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.justbnutz.labs.models.WikiModel
 import com.justbnutz.labs.services.WikipediaApiService
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
-class WikiViewModel : ViewModel() {
+class WikiViewModel : BaseViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
     private val apiService by lazy { WikipediaApiService.create() }
 
     private val _response by lazy { MutableLiveData<String>() }
     val response: LiveData<String>
         get() = _response
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
 
     fun beginSearch(srsearch: String) {
         apiService.hitCountCheck("query", "json", "search", srsearch)

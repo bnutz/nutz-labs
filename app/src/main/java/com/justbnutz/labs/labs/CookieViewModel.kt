@@ -2,26 +2,17 @@ package com.justbnutz.labs.labs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cookie
 
-class CookieViewModel : ViewModel() {
-
-    private val compositeDisposable = CompositeDisposable()
+class CookieViewModel : BaseViewModel() {
 
     private val _cookieList by lazy { MutableLiveData<List<Cookie>>() }
     val cookieList: LiveData<List<Cookie>>
         get() = _cookieList
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
 
     fun loadCookie(cookieText: String) {
         Observable.just(cookieText)

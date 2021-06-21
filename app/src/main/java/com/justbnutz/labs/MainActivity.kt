@@ -1,6 +1,5 @@
 package com.justbnutz.labs
 
-import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -24,13 +23,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        initViewModel()
-        initView()
-    }
+    override fun getLayoutId() = R.layout.activity_main
 
     override fun onResume() {
         super.onResume()
@@ -42,12 +35,12 @@ class MainActivity : BaseActivity() {
         super.onPause()
     }
 
-    private fun initViewModel() {
+    override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
-    private fun initView() {
+    override fun initView() {
         fragmentPager?.let {
             val pagerAdapter = ScreenPagerAdapter(this)
             it.adapter = pagerAdapter

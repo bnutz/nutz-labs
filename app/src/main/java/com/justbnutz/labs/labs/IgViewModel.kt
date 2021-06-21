@@ -2,12 +2,10 @@ package com.justbnutz.labs.labs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.justbnutz.labs.models.IgModel
 import com.justbnutz.labs.services.IgApiService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -21,14 +19,7 @@ import kotlin.random.Random
 /**
  * Reference: https://siongui.github.io/2018/02/12/go-get-instagram-following-followers/
  */
-class IgViewModel : ViewModel() {
-
-    private val compositeDisposable = CompositeDisposable()
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
+class IgViewModel : BaseViewModel() {
 
     val DS_USER_ID = "ds_user_id"
     val SESSIONID = "sessionid"

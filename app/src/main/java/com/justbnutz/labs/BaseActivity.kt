@@ -5,9 +5,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 
@@ -15,6 +17,21 @@ import com.google.android.material.snackbar.Snackbar
  * Common methods between all activities go here
  */
 abstract class BaseActivity : AppCompatActivity() {
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(getLayoutId())
+
+        initViewModel()
+        initView()
+    }
+
+    abstract fun initViewModel()
+
+    abstract fun initView()
 
     fun hideKeyboard(view: View) {
         (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.let {

@@ -1,9 +1,6 @@
 package com.justbnutz.labs.labs
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.justbnutz.labs.R
@@ -30,17 +27,9 @@ class WikiFragment : BaseFragment() {
         fun newInstance() = WikiFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_wikipedia, container, false)
-    }
+    override fun getLayoutId() = R.layout.fragment_wikipedia
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initView()
-    }
-
-    private fun initViewModel() {
+    override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
         viewModel = ViewModelProvider(this).get(WikiViewModel::class.java)
 
@@ -48,7 +37,7 @@ class WikiFragment : BaseFragment() {
         viewModel.response.observe(this, responseObserver)
     }
 
-    private fun initView() {
+    override fun initView() {
         btn_submit?.setOnClickListener { btnView ->
             edit_search?.text?.toString()?.let {
                 if (it.isNotEmpty()) {

@@ -5,11 +5,8 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -51,15 +48,7 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
         fun newInstance() = AppListFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_applist, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initView()
-    }
+    override fun getLayoutId() = R.layout.fragment_applist
 
     override fun onResume() {
         super.onResume()
@@ -93,7 +82,7 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
         }
     }
 
-    private fun initViewModel() {
+    override fun initViewModel() {
         // https://developer.android.com/reference/androidx/lifecycle/ViewModel
         viewModel = ViewModelProvider(this).get(AppListViewModel::class.java)
         viewModel.appList.observe(this, appListObserver)
@@ -110,7 +99,7 @@ class AppListFragment : BaseFragment(), AppListAdapter.AppListAdapterCallback {
         }
     }
 
-    private fun initView() {
+    override fun initView() {
         img_drag_handle?.setOnClickListener {
             when (bottomSheetBehaviour.state) {
                 BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
