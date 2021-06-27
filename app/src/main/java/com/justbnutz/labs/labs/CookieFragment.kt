@@ -19,7 +19,7 @@ class CookieFragment : BaseFragment<FragmentCookieBinding>() {
     }
 
     companion object {
-        val TAG = "${this::class.qualifiedName}"
+        val TAG: String = this::class.java.name
 
         fun newInstance() = CookieFragment()
     }

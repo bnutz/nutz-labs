@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -60,7 +59,7 @@ abstract class BaseActivity<vBinding: ViewBinding> : AppCompatActivity() {
 
                 showToast(getString(R.string.item_copied))
             } catch (e: Exception) {
-                showToast(String.format(getString(R.string.error_message), e.message))
+                showToast(getString(R.string.error_message, e.message))
             }
         }
     }
@@ -75,7 +74,7 @@ abstract class BaseActivity<vBinding: ViewBinding> : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(intent, null))
         } catch (e: Exception) {
-            showToast(String.format(getString(R.string.error_message), e.message))
+            showToast(getString(R.string.error_message, e.message))
         }
     }
 
@@ -84,7 +83,7 @@ abstract class BaseActivity<vBinding: ViewBinding> : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
             startActivity(intent)
         } catch (e: Exception) {
-            showToast(String.format(getString(R.string.error_message), e.message))
+            showToast(getString(R.string.error_message, e.message))
         }
     }
 
@@ -92,7 +91,7 @@ abstract class BaseActivity<vBinding: ViewBinding> : AppCompatActivity() {
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            showToast(String.format(getString(R.string.error_message), e.message))
+            showToast(getString(R.string.error_message, e.message))
         }
     }
 }

@@ -22,7 +22,7 @@ import java.util.*
 class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.AppListAdapterCallback {
 
     private lateinit var viewModel: AppListViewModel
-    private val listAdapter by lazy { AppListAdapter(viewModel.compositeDisposable) }
+    private val listAdapter by lazy { AppListAdapter(viewModel.compositeDisposable, false) }
     private val bottomSheetBehaviour by lazy { binding?.constraintBottomsheet?.let {
         BottomSheetBehavior.from(it)
     } }
@@ -41,11 +41,11 @@ class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.A
     }
 
     private val errorMsgObserver = Observer<String> {
-        parentActivity?.showToast(String.format(getString(R.string.error_message), it))
+        parentActivity?.showToast(getString(R.string.error_message, it))
     }
 
     companion object {
-        val TAG = "${this::class.qualifiedName}"
+        val TAG: String = this::class.java.name
 
         private const val REQUEST_CODE_WRITE_FILE = 0x01
 
@@ -61,7 +61,7 @@ class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.A
         viewModel.getAppList()
     }
 
-    override fun onItemClick(packageName: String) {
+    override fun onItemClick(packageName: String, appName: String) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also {
             it.addCategory(Intent.CATEGORY_DEFAULT)
             it.data = Uri.parse("package:$packageName")
@@ -78,7 +78,7 @@ class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.A
                         writeCsv()
                     } ?: run {
                         viewModel.resetCsvStatus()
-                        parentActivity?.showToast(String.format(getString(R.string.error_message), "Data path was null"))
+                        parentActivity?.showToast(getString(R.string.error_message, "Data path was null"))
                     }
                 } else {
                     viewModel.resetCsvStatus()
@@ -138,14 +138,6 @@ class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.A
             binding?.recyclerApplist?.smoothScrollToPosition(0)
         }
 
-        binding?.switchShowSystemApps?.let {
-            it.isChecked = viewModel.showSystemApps
-            it.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.showSystemApps = isChecked
-                viewModel.getAppList()
-            }
-        }
-
         binding?.txtExportCsv?.setOnClickListener {
             initCsvExport()
         }
@@ -197,9 +189,9 @@ class AppListFragment : BaseFragment<FragmentApplistBinding>(), AppListAdapter.A
                     try {
                         buffWriter.write(csvDataString)
                         buffWriter.flush()
-                        parentActivity?.showToast(String.format(getString(R.string.file_saved), filename))
+                        parentActivity?.showToast(getString(R.string.file_saved, filename))
                     } catch (e: Exception) {
-                        parentActivity?.showToast(String.format(getString(R.string.error_message), e.message))
+                        parentActivity?.showToast(getString(R.string.error_message, e.message))
                     } finally {
                         buffWriter.close()
                         bottomSheetBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED

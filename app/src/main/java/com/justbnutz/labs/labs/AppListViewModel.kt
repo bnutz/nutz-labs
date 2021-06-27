@@ -1,6 +1,7 @@
 package com.justbnutz.labs.labs
 
 import android.app.usage.UsageStatsManager
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,7 +15,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
-class AppListViewModel : BaseViewModel() {
+open class AppListViewModel : BaseViewModel() {
 
     enum class SortBy {
         ALPHABETIC,
@@ -28,7 +29,6 @@ class AppListViewModel : BaseViewModel() {
         DESC
     }
 
-    var showSystemApps: Boolean = false
     var currentSort: Pair<SortBy, SortDir> = Pair(SortBy.ALPHABETIC, SortDir.ASC)
         private set
 
@@ -73,14 +73,15 @@ class AppListViewModel : BaseViewModel() {
                 // - https://stackoverflow.com/a/50559880
                 val usageStats = usageManager.queryAndAggregateUsageStats(lastYear, System.currentTimeMillis())
 
-                val installedAppList =
-                    if (showSystemApps) pm.getInstalledApplications(PackageManager.GET_META_DATA).filterNotNull()
-                    else pm.getInstalledApplications(PackageManager.GET_META_DATA).filterNotNull().filter { (it.flags.and(ApplicationInfo.FLAG_SYSTEM)) != ApplicationInfo.FLAG_SYSTEM }
+                val launcherIntent = Intent(Intent.ACTION_MAIN).also {
+                    it.addCategory(Intent.CATEGORY_LAUNCHER)
+                }
 
-                installedAppList.forEach { appInfo ->
-                    appInfo.packageName?.let { packageName ->
+                pm.queryIntentActivities(launcherIntent, 0).filterNotNull().forEach {resolveInfo ->
+                    resolveInfo.activityInfo?.packageName?.let { packageName ->
                         // Needed for fetching install and update timestamps
-                        val packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+                        val packageInfo = pm.getPackageInfo(packageName, 0)
+                        val appInfo = pm.getApplicationInfo(packageName, 0)
 
                         appList.add(
                             AppListModel(
@@ -99,7 +100,6 @@ class AppListViewModel : BaseViewModel() {
                         )
                     }
                 }
-
                 appList
             }
             .observeOn(Schedulers.computation())
@@ -171,7 +171,7 @@ class AppListViewModel : BaseViewModel() {
                 sBuilder.append("\"Native Library Directory\",")
                 sBuilder.append("\"Public Source Directory\",")
                 sBuilder.append("\"Source Directory\"")
-                sBuilder.appendln()
+                sBuilder.appendLine()
 
                 _appList.value?.forEach {
                     sBuilder.append("\"${it.packageName}\",")
@@ -184,7 +184,7 @@ class AppListViewModel : BaseViewModel() {
                     sBuilder.append("\"${it.nativeLibraryDir}\",")
                     sBuilder.append("\"${it.publicSourceDir}\",")
                     sBuilder.append("\"${it.sourceDir}\"")
-                    sBuilder.appendln()
+                    sBuilder.appendLine()
                 }
 
                 Pair(filename, sBuilder.toString())

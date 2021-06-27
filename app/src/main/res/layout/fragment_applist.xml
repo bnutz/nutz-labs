@@ -180,19 +180,6 @@
                 android:layout_height="1dp"
                 android:background="#eeeeee"
                 />
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_show_system_apps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/show_system_apps"
-                android:background="?attr/selectableItemBackground"
-                />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#eeeeee"
-                />
             <TextView
                 android:id="@+id/txt_open_usage_permissions"
                 android:layout_width="match_parent"

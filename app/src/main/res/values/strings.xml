@@ -27,7 +27,18 @@
     <string name="last_opened">Last Opened</string>
 
     <string name="sort">Sort</string>
-    <string name="show_system_apps">Show System apps</string>
     <string name="open_usage_permission_settings">Open App Usage Permission Settings</string>
     <string name="export_csv">Export CSV</string>
+
+    <string name="toggle_quicksettings1">Quick Settings Tile 1</string>
+    <string name="toggle_quicksettings2">Quick Settings Tile 2</string>
+    <string name="quicksetting_target_prompt">(Tap a target app to assign to this tile)</string>
+    <string name="no_package">Target app not set</string>
+    <string name="quicksetting_hint">(Add &amp; close to refresh)</string>
+
+    <string name="quicksettings_select_title">Select Tile</string>
+    <string-array name="quicksettings_labels">
+        <item>@string/toggle_quicksettings1</item>
+        <item>@string/toggle_quicksettings2</item>
+    </string-array>
 </resources>

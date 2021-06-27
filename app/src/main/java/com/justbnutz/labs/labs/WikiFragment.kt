@@ -24,7 +24,7 @@ class WikiFragment : BaseFragment<FragmentWikipediaBinding>() {
     }
 
     companion object {
-        val TAG = "${this::class.qualifiedName}"
+        val TAG: String = this::class.java.name
 
         fun newInstance() = WikiFragment()
     }

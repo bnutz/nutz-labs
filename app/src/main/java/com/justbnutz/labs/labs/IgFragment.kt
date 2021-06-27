@@ -37,7 +37,7 @@ class IgFragment : BaseFragment<FragmentInstagramBinding>() {
     }
 
     companion object {
-        val TAG = "${this::class.qualifiedName}"
+        val TAG: String = this::class.java.name
 
         fun newInstance() = IgFragment()
     }

@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.core.text.bold
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.justbnutz.labs.R
+import com.justbnutz.labs.databinding.ListitemAppSimpleBinding
 import com.justbnutz.labs.databinding.ListitemAppinfoBinding
 import com.justbnutz.labs.models.AppListModel
 import io.reactivex.Observable
@@ -16,10 +18,10 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
-class AppListAdapter(private val compositeDisposable: CompositeDisposable) : RecyclerView.Adapter<AppListAdapter.AppListItemViewHolder>() {
+class AppListAdapter(private val compositeDisposable: CompositeDisposable, private val simpleRows: Boolean) : RecyclerView.Adapter<AppListAdapter.AppListBaseViewHolder>() {
 
     interface AppListAdapterCallback {
-        fun onItemClick(packageName: String)
+        fun onItemClick(packageName: String, appName: String)
     }
 
     var parentCallback: AppListAdapterCallback? = null
@@ -68,23 +70,40 @@ class AppListAdapter(private val compositeDisposable: CompositeDisposable) : Rec
             .addTo(compositeDisposable)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppListItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppListBaseViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemViewBinding = ListitemAppinfoBinding.inflate(inflater, parent, false)
-        return AppListItemViewHolder(itemViewBinding)
+        if (simpleRows) {
+            val itemViewBinding = ListitemAppSimpleBinding.inflate(inflater, parent, false)
+            return AppListSimpleViewHolder(itemViewBinding)
+        } else {
+            val itemViewBinding = ListitemAppinfoBinding.inflate(inflater, parent, false)
+            return AppListItemViewHolder(itemViewBinding)
+        }
     }
 
-    override fun onBindViewHolder(holder: AppListItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AppListBaseViewHolder, position: Int) {
         val itemData = dataList[position]
         holder.bind(itemData, currentSort) {
-            parentCallback?.onItemClick(itemData.packageName)
+            parentCallback?.onItemClick(itemData.packageName, itemData.appName)
         }
     }
 
     override fun getItemCount() = dataList.size
 
-    class AppListItemViewHolder(private val itemViewBinding: ListitemAppinfoBinding) : RecyclerView.ViewHolder(itemViewBinding.root) {
-        fun bind(appData: AppListModel, currentSort: AppListViewModel.SortBy, onItemClick: () -> Unit) {
+    class AppListSimpleViewHolder(private val itemViewBinding: ListitemAppSimpleBinding) : AppListBaseViewHolder(itemViewBinding) {
+        override fun bind(appData: AppListModel, currentSort: AppListViewModel.SortBy, onItemClick: () -> Unit) {
+            itemViewBinding.apply {
+                txtAppName.text = appData.appName
+                txtPackageName.text = appData.packageName
+                imgAppIcon.setImageDrawable(appData.appIcon)
+
+            }
+            super.bind(appData, currentSort, onItemClick)
+        }
+    }
+
+    class AppListItemViewHolder(private val itemViewBinding: ListitemAppinfoBinding) : AppListBaseViewHolder(itemViewBinding) {
+        override fun bind(appData: AppListModel, currentSort: AppListViewModel.SortBy, onItemClick: () -> Unit) {
             itemViewBinding.apply {
                 txtPackageName.text = appData.packageName
                 imgAppIcon.setImageDrawable(appData.appIcon)
@@ -113,10 +132,15 @@ class AppListAdapter(private val compositeDisposable: CompositeDisposable) : Rec
                         else -> lblLastOpened
                     }
                 }
+            }
+            super.bind(appData, currentSort, onItemClick)
+        }
+    }
 
-                itemViewBinding.root.setOnClickListener {
-                    onItemClick.invoke()
-                }
+    abstract class AppListBaseViewHolder(private val itemViewBinding: ViewBinding) : RecyclerView.ViewHolder(itemViewBinding.root) {
+        open fun bind(appData: AppListModel, currentSort: AppListViewModel.SortBy, onItemClick: () -> Unit) {
+            itemViewBinding.root.setOnClickListener {
+                onItemClick.invoke()
             }
         }
     }
